@@ -113,6 +113,20 @@ public class DashboardController implements Initializable {
 	@FXML
 	void addNewHouse(ActionEvent event) {
 		
+		try {
+
+			ListHouse house = getHouse();
+			if (list.recordExist(house))
+				lblLog.setText("Lot number already exists");
+			else {
+				list.insert(house);
+				lblLog.setText("House added to list");
+			}
+		} catch (NumberFormatException e) {
+			// Text field info incorrectly formated
+			lblLog.setText("Number? " + e.getMessage());
+		}
+		
 	}
 
 	/**

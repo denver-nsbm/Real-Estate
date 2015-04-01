@@ -50,4 +50,33 @@ public class SortedList extends List {
 		return null;
 	}
 
+	/**
+	 * Insert to List House
+	 * @param item
+	 */
+	public void insert(Listable item) {
+
+		int i; // Holds the location of the List
+
+		/* Check First element isEmpty */
+		if (list[0] == null) {
+			list[0] = item;
+		} else {
+			/* Find the sorted index */
+			for (i = 0; i < maxSpace; i++) {
+
+				if (item.compareTo(list[i]) < 0) {
+					break;
+				}
+			}
+			/* Swipe the last elements */
+			for (int index = maxSpace; index > i; index--) {
+				list[index] = list[index - 1];
+			}
+			/* Copy the element to sorted list */
+			list[i] = item.copy();
+		}
+		maxSpace++;
+	}
+
 }
