@@ -64,6 +64,17 @@ public class DashboardController implements Initializable {
 	@FXML
 	void resetHouseList(ActionEvent event) {
 		
+		ListHouse house;
+		list.reset();
+		if (list.size() == 0)
+			clearTextboxes();
+		else {
+			house = (ListHouse) list.next();
+			if (house != null)
+				setHouse(house);
+		}
+		lblLog.setText("Reset the House List");
+
 	}
 
 	/**
