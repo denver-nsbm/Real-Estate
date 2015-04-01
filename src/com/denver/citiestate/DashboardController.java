@@ -102,7 +102,13 @@ public class DashboardController implements Initializable {
 	 */
 	@FXML
 	void deleteRecord(ActionEvent event) {
-		
+
+		Listable house = getHouse();
+		list.delete(house);
+		clearTextboxes();
+		resetHouseList(event);
+		lblLog.setText("House Deleted");
+
 	}
 
 	/**

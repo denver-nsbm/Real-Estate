@@ -79,4 +79,29 @@ public class SortedList extends List {
 		maxSpace++;
 	}
 
+	/**
+	 * Detele from listHouse
+	 * @param item
+	 */
+	public void delete(Listable item) {
+
+		int i = 0;
+
+		while (item.compareTo(list[i]) != 0) {
+			i++;
+		}
+		
+		for (int j = i; j < maxSpace; j++) {
+			if(list[j + 1] != null){
+				list[j] = list[j + 1];
+			} else{
+				list[j] = null;
+				break;
+			}
+			
+		}
+
+		maxSpace--;
+	}
+
 }
