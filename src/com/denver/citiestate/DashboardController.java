@@ -93,6 +93,15 @@ public class DashboardController implements Initializable {
 	@FXML
 	void findNext(ActionEvent event) {
 
+		Listable house = list.next();
+		if (house != null) {
+			setHouse((ListHouse) house);
+			lblLog.setText("Next House Found");
+		} else {
+			clearTextboxes();
+			lblLog.setText("No Record Found!");
+		}
+
 	}
 
 	/**
@@ -160,6 +169,34 @@ public class DashboardController implements Initializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Get the current house from textfields
+	 * 
+	 * @return
+	 */
+	private ListHouse getHouse() {
+
+		return new ListHouse(Integer.parseInt(txtLotNumber.getText()),
+				txtFirstName.getText(), txtLastName.getText(),
+				Integer.parseInt(txtPrice.getText()),
+				Integer.parseInt(txtSquareFeet.getText()),
+				Integer.parseInt(txtBedrooms.getText()));
+	}
+
+	/**
+	 * Set the ListHouse object to textfields
+	 * 
+	 * @param house
+	 */
+	private void setHouse(ListHouse house) {
+		txtLotNumber.setText(Integer.toString(house.getLotNumber()));
+		txtFirstName.setText(house.getFirstName());
+		txtLastName.setText(house.getLastName());
+		txtPrice.setText(Integer.toString(house.getPrice()));
+		txtSquareFeet.setText(Integer.toString(house.getSquareFeet()));
+		txtBedrooms.setText(Integer.toString(house.getBedRooms()));
 	}
 
 	/**
