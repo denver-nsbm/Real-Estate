@@ -74,6 +74,14 @@ public class DashboardController implements Initializable {
 	@FXML
 	void findRecord(ActionEvent event) {
 
+		Listable found = list.find(new ListHouse(Integer.parseInt(txtLotNumber
+				.getText()), "", "", 0, 0, 0));
+		if (found == null) {
+			lblLog.setText("Can't find the House");
+		} else {
+			setHouse((ListHouse) found);
+			lblLog.setText("House Found");
+		}
 		
 	}
 
