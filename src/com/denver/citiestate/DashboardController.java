@@ -23,6 +23,30 @@ public class DashboardController implements Initializable {
 	private TextField txtSquareFeet, txtLotNumber, txtBedrooms, txtPrice,
 			txtLastName, txtFirstName;
 
+	private SortedList list = new SortedList(20);
+
+	/**
+	 * On Close Listener to save to file
+	 */
+	private void setOnCloseListener() {
+		Stage stage = (Stage) lblLog.getScene().getWindow();
+
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			public void handle(WindowEvent window) {
+
+				list.reset();
+				// Store info from list into house file
+				for (int i = 0; i < list.getMaxSpace(); i++) {
+					ListHouse house = (ListHouse) list.next();
+					save.addToStorage(house);
+				}
+
+				save.writeToFile();
+
+			}
+		});
+	}
+
 
 	/**
 	 * Menu bar quit functionality
@@ -41,6 +65,21 @@ public class DashboardController implements Initializable {
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+
+				if (new File("records.txt").exists()) {
+					list = save.readFromFile(list);
+					list.reset();
+					ListHouse house = (ListHouse) list.next();
+					if (house != null)
+						setHouse(house);
+				}
+				setOnCloseListener();
+			}
+		});
 		
 	}
 
