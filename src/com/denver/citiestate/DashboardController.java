@@ -23,6 +23,30 @@ public class DashboardController implements Initializable {
 	private TextField txtSquareFeet, txtLotNumber, txtBedrooms, txtPrice,
 			txtLastName, txtFirstName;
 
+	private SortedList list = new SortedList(20);
+
+	/**
+	 * On Close Listener to save to file
+	 */
+	private void setOnCloseListener() {
+		Stage stage = (Stage) lblLog.getScene().getWindow();
+
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			public void handle(WindowEvent window) {
+
+				list.reset();
+				// Store info from list into house file
+				for (int i = 0; i < list.getMaxSpace(); i++) {
+					ListHouse house = (ListHouse) list.next();
+					save.addToStorage(house);
+				}
+
+				save.writeToFile();
+
+			}
+		});
+	}
+
 
 	/**
 	 * Menu bar quit functionality
@@ -41,6 +65,21 @@ public class DashboardController implements Initializable {
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+
+				if (new File("records.txt").exists()) {
+					list = save.readFromFile(list);
+					list.reset();
+					ListHouse house = (ListHouse) list.next();
+					if (house != null)
+						setHouse(house);
+				}
+				setOnCloseListener();
+			}
+		});
 		
 	}
 
@@ -64,6 +103,17 @@ public class DashboardController implements Initializable {
 	@FXML
 	void resetHouseList(ActionEvent event) {
 		
+		ListHouse house;
+		list.reset();
+		if (list.size() == 0)
+			clearTextboxes();
+		else {
+			house = (ListHouse) list.next();
+			if (house != null)
+				setHouse(house);
+		}
+		lblLog.setText("Reset the House List");
+
 	}
 
 	/**
@@ -74,6 +124,14 @@ public class DashboardController implements Initializable {
 	@FXML
 	void findRecord(ActionEvent event) {
 
+		Listable found = list.find(new ListHouse(Integer.parseInt(txtLotNumber
+				.getText()), "", "", 0, 0, 0));
+		if (found == null) {
+			lblLog.setText("Can't find the House");
+		} else {
+			setHouse((ListHouse) found);
+			lblLog.setText("House Found");
+		}
 		
 	}
 
@@ -85,6 +143,15 @@ public class DashboardController implements Initializable {
 	@FXML
 	void findNext(ActionEvent event) {
 
+		Listable house = list.next();
+		if (house != null) {
+			setHouse((ListHouse) house);
+			lblLog.setText("Next House Found");
+		} else {
+			clearTextboxes();
+			lblLog.setText("No Record Found!");
+		}
+
 	}
 
 	/**
@@ -94,7 +161,13 @@ public class DashboardController implements Initializable {
 	 */
 	@FXML
 	void deleteRecord(ActionEvent event) {
-		
+
+		Listable house = getHouse();
+		list.delete(house);
+		clearTextboxes();
+		resetHouseList(event);
+		lblLog.setText("House Deleted");
+
 	}
 
 	/**
@@ -104,6 +177,20 @@ public class DashboardController implements Initializable {
 	 */
 	@FXML
 	void addNewHouse(ActionEvent event) {
+		
+		try {
+
+			ListHouse house = getHouse();
+			if (list.recordExist(house))
+				lblLog.setText("Lot number already exists");
+			else {
+				list.insert(house);
+				lblLog.setText("House added to list");
+			}
+		} catch (NumberFormatException e) {
+			// Text field info incorrectly formated
+			lblLog.setText("Number? " + e.getMessage());
+		}
 		
 	}
 
@@ -132,6 +219,34 @@ public class DashboardController implements Initializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Get the current house from textfields
+	 * 
+	 * @return
+	 */
+	private ListHouse getHouse() {
+
+		return new ListHouse(Integer.parseInt(txtLotNumber.getText()),
+				txtFirstName.getText(), txtLastName.getText(),
+				Integer.parseInt(txtPrice.getText()),
+				Integer.parseInt(txtSquareFeet.getText()),
+				Integer.parseInt(txtBedrooms.getText()));
+	}
+
+	/**
+	 * Set the ListHouse object to textfields
+	 * 
+	 * @param house
+	 */
+	private void setHouse(ListHouse house) {
+		txtLotNumber.setText(Integer.toString(house.getLotNumber()));
+		txtFirstName.setText(house.getFirstName());
+		txtLastName.setText(house.getLastName());
+		txtPrice.setText(Integer.toString(house.getPrice()));
+		txtSquareFeet.setText(Integer.toString(house.getSquareFeet()));
+		txtBedrooms.setText(Integer.toString(house.getBedRooms()));
 	}
 
 	/**
