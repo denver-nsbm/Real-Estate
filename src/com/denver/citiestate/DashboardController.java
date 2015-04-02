@@ -1,9 +1,17 @@
 package com.denver.citiestate;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.denver.citiestate.interfaces.Listable;
+import com.denver.citiestate.pojo.ListHouse;
+import com.denver.citiestate.utils.HouseFile;
+import com.denver.citiestate.utils.SortedList;
+
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,6 +21,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class DashboardController implements Initializable {
 
@@ -24,6 +33,8 @@ public class DashboardController implements Initializable {
 			txtLastName, txtFirstName;
 
 	private SortedList list = new SortedList(20);
+	
+	private HouseFile save = new HouseFile();
 
 	/**
 	 * On Close Listener to save to file
